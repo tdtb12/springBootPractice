@@ -1,4 +1,4 @@
-package com.jimhsu.springBootPractice.service;
+package com.jimhsu.springBootPractice.spring.service;
 
 public interface LoginService {
 

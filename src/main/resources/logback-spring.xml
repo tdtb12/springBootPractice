@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+
+<!-- <configuration> 的 scan 設定為 true 使配置改變時可以重新載入配置文件 -->
+<configuration scan="true">
+
+    <!-- 常數宣告 -->
+    <property name="log_pattern"
+              value="%boldYellow([%d{yyyy-MM-dd HH:mm:ss.SSS}])[%-5level][%class{0}.%method][%line]%boldMagenta([%thread]) %msg%n"/>
+    <property name="projectName" value="springBootPractice"/>
+
+    <!--Console appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${log_pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Daily file appender -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./logs/${projectName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>./logs/${projectName}.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <!-- keep 30 days' worth of history capped at 1GB total size -->
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log_pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Async輸出，增加寫入效能 -->
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>512</queueSize>
+        <appender-ref ref="FILE"/>
+    </appender>
+
+    <!-- logger宣告 -->
+    <logger name="logger.info" level="INFO"/>
+    <logger name="logger.debug" level="DEBUG"/>
+
+    <!-- 輸出到console跟檔案 -->
+    <root>
+        <level value="INFO"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC"/>
+    </root>
+
+</configuration>
